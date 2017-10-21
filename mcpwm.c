@@ -55,6 +55,7 @@ static volatile int direction;
 static volatile float dutycycle_set;
 static volatile float dutycycle_now;
 static volatile float rpm_now;
+static volatile float enc_prev = 0; // making rpm from the encoder work
 static volatile float speed_pid_set_rpm;
 static volatile float pos_pid_set_pos;
 static volatile float current_set;
@@ -685,6 +686,9 @@ float mcpwm_get_switching_frequency_now(void) {
  * The RPM value.
  */
 float mcpwm_get_rpm(void) {
+	if(conf->motor_type == MOTOR_TYPE_DC) {
+		return rpm_now;
+	}
 	return direction ? rpm_now : -rpm_now;
 }
 
@@ -1176,6 +1180,13 @@ static THD_FUNCTION(rpm_thread, arg) {
 			if (fabsf(rpm_tmp) < fabsf(rpm_now)) {
 				rpm_now = rpm_tmp;
 			}
+		}
+
+		if(conf->motor_type == MOTOR_TYPE_DC) {
+			float enc_now = encoder_read_deg();
+			rpm_now = (utils_angle_difference(enc_now, enc_prev)) * 100;
+			enc_prev = enc_now;
+			//commands_printf("rpm_now: %f", rpm_now);
 		}
 
 		// Some low-pass filtering
