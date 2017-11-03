@@ -20,7 +20,7 @@
 
 // Default settings
 #ifndef MCCONF_DEFAULT_MOTOR_TYPE
-#define MCCONF_DEFAULT_MOTOR_TYPE		MOTOR_TYPE_BLDC
+#define MCCONF_DEFAULT_MOTOR_TYPE		MOTOR_TYPE_DC
 #endif
 #ifndef MCCONF_PWM_MODE
 #define MCCONF_PWM_MODE					PWM_MODE_SYNCHRONOUS // Default PWM mode
@@ -34,10 +34,10 @@
 
 // Limits
 #ifndef MCCONF_L_CURRENT_MAX
-#define MCCONF_L_CURRENT_MAX			60.0	// Current limit in Amperes (Upper)
+#define MCCONF_L_CURRENT_MAX			10.0	// Current limit in Amperes (Upper)
 #endif
 #ifndef MCCONF_L_CURRENT_MIN
-#define MCCONF_L_CURRENT_MIN			-60.0	// Current limit in Amperes (Lower)
+#define MCCONF_L_CURRENT_MIN			-10.0	// Current limit in Amperes (Lower)
 #endif
 #ifndef MCCONF_L_IN_CURRENT_MAX
 #define MCCONF_L_IN_CURRENT_MAX			6.0	// Input current limit in Amperes (Upper)
@@ -297,10 +297,10 @@
 #define MCCONF_M_CURRENT_BACKOFF_GAIN	0.5		// The error gain of the current limiting algorithm
 #endif
 #ifndef MCCONF_M_ENCODER_COUNTS
-#define MCCONF_M_ENCODER_COUNTS			8192	// The number of encoder counts
+#define MCCONF_M_ENCODER_COUNTS			384 // The number of encoder counts
 #endif
 #ifndef MCCONF_M_SENSOR_PORT_MODE
-#define MCCONF_M_SENSOR_PORT_MODE		SENSOR_PORT_MODE_HALL // The mode of the hall_encoder port
+#define MCCONF_M_SENSOR_PORT_MODE		SENSOR_PORT_MODE_ABI // The mode of the hall_encoder port
 #endif
 
 #endif /* MCCONF_DEFAULT_H_ */
