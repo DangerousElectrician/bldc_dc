@@ -56,6 +56,7 @@ static volatile float dutycycle_set;
 static volatile float dutycycle_now;
 static volatile float rpm_now;
 static volatile float enc_prev = 0; // making rpm from the encoder work
+static volatile float prev_t_rpm = 0;
 static volatile float speed_pid_set_rpm;
 static volatile float pos_pid_set_pos;
 static volatile float current_set;
@@ -1183,10 +1184,15 @@ static THD_FUNCTION(rpm_thread, arg) {
 		}
 
 		if(conf->motor_type == MOTOR_TYPE_DC) {
-			float enc_now = encoder_read_deg();
-			rpm_now = (utils_angle_difference(enc_now, enc_prev)) * 100;
+			#define ST2Sfloat(n) (((n) + CH_CFG_ST_FREQUENCY - 1UL) / (float)CH_CFG_ST_FREQUENCY) // This converts system ticks to milliseconds probably
+			volatile float enc_now = encoder_read_deg();
+
+			volatile float t_now = chVTGetSystemTimeX();
+			volatile float dt_rpm = ST2Sfloat(prev_t_rpm - t_now);
+			rpm_now = (float)utils_angle_difference(enc_now, enc_prev) / (float)360  *dt_rpm* 1000 * 60; // get rpm from encoder
 			enc_prev = enc_now;
 			//commands_printf("rpm_now: %f", rpm_now);
+			prev_t_rpm = t_now;
 		}
 
 		// Some low-pass filtering
